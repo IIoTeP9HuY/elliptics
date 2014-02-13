@@ -34,6 +34,8 @@ slru_cache_t::slru_cache_t(struct dnet_node *n, const std::vector<size_t> &cache
 }
 
 slru_cache_t::~slru_cache_t() {
+	std::cerr << "Start destr" << std::endl;
+	size_t t1 = clock();
 	time_stats_updater_t time_stats_updater;
 	ioremap::cache::local::thread_time_stats_updater = &time_stats_updater;
 	start_action(ACTION_DESTRUCT);
@@ -41,6 +43,8 @@ slru_cache_t::~slru_cache_t() {
 	clear();
 	stop_action(ACTION_DESTRUCT);
 	ioremap::cache::local::thread_time_stats_updater = NULL;
+	size_t t2 = clock();
+	std::cerr << "Stop destr, elapsed: " << double(t2 - t1) / CLOCKS_PER_SEC << "s" << std::endl;
 }
 
 int slru_cache_t::write(const unsigned char *id, dnet_net_state *st, dnet_cmd *cmd, dnet_io_attr *io, const char *data) {
